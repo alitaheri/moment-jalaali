@@ -4,6 +4,32 @@ module.exports = jMoment
 var moment = require('moment')
   , jalaali = require('jalaali-js')
 
+
+/************************************
+    Deprecation
+************************************/
+// Adopted from https://github.com/TooTallNate/util-deprecate
+var deprecate = function(fn, msg){
+  var warned = false;
+  return function() {
+    if(!warned){
+      console.warn(msg);
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+};
+
+var deprecatedMessages = {
+  func: function(name) {
+    return 'The '
+         + name
+         + ' function is deprecated and will be removed with the next major release.'
+         + ' Please refer to the documentations '
+         + ' (https://github.com/jalaali/moment-jalaali#api) for more details.'
+  }
+};
+
 /************************************
     Constants
 ************************************/
@@ -99,6 +125,12 @@ function ordinalizeToken(func, period) {
 /************************************
     Helpers
 ************************************/
+
+function isJalaali(system){
+  return system
+      && system.toUpperCase
+      && system.toUpperCase() === jMoment.systems.JALAALI
+}
 
 function extend(a, b) {
   var key
@@ -459,7 +491,7 @@ function removeParsedTokens(config) {
 }
 
 /************************************
-    Week of Year
+    Getter Functions
 ************************************/
 
 function jWeekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
@@ -474,9 +506,91 @@ function jWeekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
     daysToDayOfWeek += 7
   }
   adjustedMoment = jMoment(mom).add(daysToDayOfWeek, 'd')
-  return  { week: Math.ceil(adjustedMoment.jDayOfYear() / 7)
-          , year: adjustedMoment.jYear()
+  return  { week: Math.ceil(jDayOfYear(adjustedMoment) / 7)
+          , year: jYear(adjustedMoment)
           }
+}
+
+function jYear(mom, input) {
+  var lastDay
+    , j
+    , g
+    if (typeof input === 'number') {
+      j = toJalaali(moment.fn.year.call(mom), moment.fn.month.call(mom), moment.fn.date.call(mom))
+      lastDay = Math.min(j.jd, jMoment.jDaysInMonth(input, j.jm))
+      g = toGregorian(input, j.jm, lastDay)
+      setDate(mom, g.gy, g.gm, g.gd)
+      moment.updateOffset(mom)
+      return mom
+    } else {
+      return toJalaali(moment.fn.year.call(mom), moment.fn.month.call(mom), moment.fn.date.call(mom)).jy
+    }
+}
+
+function jMonth(mom, input) {
+  var lastDay
+    , j
+    , g
+  if (input != null) {
+    if (typeof input === 'string') {
+      input = mom.lang().jMonthsParse(input)
+      if (typeof input !== 'number')
+        return mom
+    }
+    j = toJalaali(moment.fn.year.call(mom), moment.fn.month.call(mom), moment.fn.date.call(mom))
+    lastDay = Math.min(j.jd, jMoment.jDaysInMonth(j.jy, input))
+    mom.year(j.jy + div(input, 12))
+    input = mod(input, 12)
+    if (input < 0) {
+      input += 12
+      mom.year(mom.year() - 1)
+    }
+    g = toGregorian(mom.year(), input, lastDay)
+    setDate(mom, g.gy, g.gm, g.gd)
+    moment.updateOffset(mom)
+    return mom
+  } else {
+    return toJalaali(moment.fn.year.call(mom), moment.fn.month.call(mom), moment.fn.date.call(mom)).jm
+  }
+}
+
+function jDate(mom, input) {
+  var j
+    , g
+  if (typeof input === 'number') {
+    j = toJalaali(moment.fn.year.call(mom), moment.fn.month.call(mom), moment.fn.date.call(mom))
+    g = toGregorian(j.jy, j.jm, input)
+    setDate(mom, g.gy, g.gm, g.gd)
+    moment.updateOffset(mom)
+    return mom
+  } else {
+    return toJalaali(moment.fn.year.call(mom), moment.fn.month.call(mom), moment.fn.date.call(mom)).jd
+  }
+}
+
+function jDayOfYear(mom, input) {
+  var dayOfYear = Math.round((moment.fn.startOf.call(jMoment(mom),'day') - jMoment(mom).startOf('jYear')) / 864e5) + 1
+  return input == null ? dayOfYear : mom.add(input - dayOfYear, 'd')
+}
+
+function jWeek(mom, input) {
+  var week = jWeekOfYear(mom, mom.localeData()._week.dow, mom.localeData()._week.doy).week
+  return input == null ? week : mom.add((input - week) * 7, 'd')
+}
+
+function jWeekYear(mom, input) {
+  var year = jWeekOfYear(mom, mom.localeData()._week.dow, mom.localeData()._week.doy).year
+
+  if(input == null){
+    return year
+  } else {
+    var system = mom.system
+    // Internal dependencies. HACK HACK HACK!!!
+    mom.system = jMoment.systems.GREGORIAN
+    moment.fn.add.call(mom, input - year, 'y')
+    mom.system = system
+    return mom
+  }
 }
 
 /************************************
@@ -526,6 +640,10 @@ function makeMoment(input, format, lang, strict, utc) {
   if (strict && jm.isValid()) {
     jm._isValid = jm.format(origFormat) === origInput
   }
+
+  // default to gregorian calendar system.
+  jm.system = jMoment.systems.GREGORIAN;
+
   return jm
 }
 
@@ -542,6 +660,11 @@ jMoment.utc = function (input, format, lang, strict) {
 
 jMoment.unix = function (input) {
   return makeMoment(input * 1000)
+}
+
+jMoment.systems = {
+  JALAALI: 'JALAALI',
+  GREGORIAN: 'GREGORIAN'
 }
 
 /************************************
@@ -570,77 +693,77 @@ jMoment.fn.format = function (format) {
   return moment.fn.format.call(this, format)
 }
 
-jMoment.fn.jYear = function (input) {
-  var lastDay
-    , j
-    , g
-  if (typeof input === 'number') {
-    j = toJalaali(this.year(), this.month(), this.date())
-    lastDay = Math.min(j.jd, jMoment.jDaysInMonth(input, j.jm))
-    g = toGregorian(input, j.jm, lastDay)
-    setDate(this, g.gy, g.gm, g.gd)
-    moment.updateOffset(this)
-    return this
+jMoment.fn.year = function (input) {
+  if(isJalaali(this.system)){
+    return jYear(this, input)
+  } else
+    return moment.fn.year.call(this, input);
+}
+
+jMoment.fn.month = function (input) {
+  if(isJalaali(this.system)){
+    return jMonth(this, input)
   } else {
-    return toJalaali(this.year(), this.month(), this.date()).jy
+    return moment.fn.month.call(this, input);
   }
 }
 
-jMoment.fn.jMonth = function (input) {
-  var lastDay
-    , j
-    , g
-  if (input != null) {
-    if (typeof input === 'string') {
-      input = this.lang().jMonthsParse(input)
-      if (typeof input !== 'number')
-        return this
-    }
-    j = toJalaali(this.year(), this.month(), this.date())
-    lastDay = Math.min(j.jd, jMoment.jDaysInMonth(j.jy, input))
-    this.jYear(j.jy + div(input, 12))
-    input = mod(input, 12)
-    if (input < 0) {
-      input += 12
-      this.jYear(this.jYear() - 1)
-    }
-    g = toGregorian(this.jYear(), input, lastDay)
-    setDate(this, g.gy, g.gm, g.gd)
-    moment.updateOffset(this)
-    return this
+jMoment.fn.date = function (input) {
+  if(isJalaali(this.system)){
+    return jDate(this, input)
   } else {
-    return toJalaali(this.year(), this.month(), this.date()).jm
+    return moment.fn.date.call(this, input);
   }
 }
 
-jMoment.fn.jDate = function (input) {
-  var j
-    , g
-  if (typeof input === 'number') {
-    j = toJalaali(this.year(), this.month(), this.date())
-    g = toGregorian(j.jy, j.jm, input)
-    setDate(this, g.gy, g.gm, g.gd)
-    moment.updateOffset(this)
-    return this
+jMoment.fn.dayOfYear = function (input) {
+  if(isJalaali(this.system)){
+    return jDayOfYear(this, input)
   } else {
-    return toJalaali(this.year(), this.month(), this.date()).jd
+    return moment.fn.dayOfYear.call(this, input);
   }
 }
 
-jMoment.fn.jDayOfYear = function (input) {
-  var dayOfYear = Math.round((jMoment(this).startOf('day') - jMoment(this).startOf('jYear')) / 864e5) + 1
-  return input == null ? dayOfYear : this.add(input - dayOfYear, 'd')
+jMoment.fn.week = function (input) {
+  if(isJalaali(this.system)){
+    return jWeek(this, input)
+  } else {
+    return moment.fn.week.call(this, input);
+  }
 }
 
-jMoment.fn.jWeek = function (input) {
-  var week = jWeekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).week
-  return input == null ? week : this.add((input - week) * 7, 'd')
+jMoment.fn.weekYear = function (input) {
+  if(isJalaali(this.system)){
+    return jWeekYear(this, input)
+  } else {
+    return moment.fn.weekYear.call(this, input);
+  }
 }
 
-jMoment.fn.jWeekYear = function (input) {
-  var year = jWeekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year
-  return input == null ? year : this.add(input - year, 'y')
-}
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
+jMoment.fn.jYear = deprecate(function (input) {
+  return jYear(this, input)
+}, deprecatedMessages.func('jYear'))
+
+jMoment.fn.jMonth = deprecate(function (input) {
+  return jMonth(this, input)
+}, deprecatedMessages.func('jMonth'))
+
+jMoment.fn.jDate = deprecate(function (input) {
+  return jDate(this, input)
+}, deprecatedMessages.func('jDate'))
+
+jMoment.fn.jDayOfYear = deprecate(function (input) {
+  return jDayOfYear(this, input)
+}, deprecatedMessages.func('jDayOfYear'))
+
+jMoment.fn.jWeek = deprecate(function (input) {
+  return jWeek(this, input)
+}, deprecatedMessages.func('jWeek'))
+
+jMoment.fn.jWeekYear = deprecate(function (input) {
+  return jWeekYear(this, input)
+}, deprecatedMessages.func('jWeekYear'))
 
 jMoment.fn.add = function (val, units) {
   var temp
@@ -707,10 +830,12 @@ jMoment.fn.clone = function () {
   return jMoment(this)
 }
 
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
 jMoment.fn.jYears = jMoment.fn.jYear
 jMoment.fn.jMonths = jMoment.fn.jMonth
 jMoment.fn.jDates = jMoment.fn.jDate
 jMoment.fn.jWeeks = jMoment.fn.jWeek
+// -----------------------------------------------------------------------------
 
 /************************************
     jMoment Statics

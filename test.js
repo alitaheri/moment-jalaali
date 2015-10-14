@@ -268,59 +268,108 @@ describe('moment', function() {
   describe('#jYear', function() {
     it('should return Jalaali year', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jYear().should.be.equal(1360)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.year().should.be.equal(1360)
     })
 
     it('should set Jalaali year', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jYear(1392)
       m.format('jYYYY/jM/jD').should.be.equal('1392/5/26')
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.year(1392)
+      m.format('jYYYY/jM/jD').should.be.equal('1392/5/26')
+
       m = moment('2013-03-20')
       m.format('jYY/jM/jD').should.be.equal('91/12/30')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jYear(1392)
       m.format('jYY/jM/jD').should.be.equal('92/12/29')
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.year(1392)
+      m.format('jYY/jM/jD').should.be.equal('92/12/29')
     })
-
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
     it('should also has jYears alias', function() {
       moment.fn.jYear.should.be.equal(moment.fn.jYears)
     })
+// -----------------------------------------------------------------------------
   })
 
   describe('#jMonth', function() {
     it('should return Jalaali month', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jMonth().should.be.equal(4)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.month().should.be.equal(4)
     })
 
     it('should set Jalaali month', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jMonth(7)
       m.format('jYYYY/jM/jD').should.be.equal('1360/8/26')
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.month(7)
+      m.format('jYYYY/jM/jD').should.be.equal('1360/8/26')
+
       m = moment('2012-08-21')
       m.format('jYY/jM/jD').should.be.equal('91/5/31')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jMonth(11)
       m.format('jYY/jM/jD').should.be.equal('91/12/30')
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.month(11)
+      m.format('jYY/jM/jD').should.be.equal('91/12/30')
+
       m = moment('2013-08-22')
       m.format('jYY/jM/jD').should.be.equal('92/5/31')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jMonth(11)
       m.format('jYY/jM/jD').should.be.equal('92/12/29')
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.month(11)
+      m.format('jYY/jM/jD').should.be.equal('92/12/29')
     })
-
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
     it('should also has jMonths alias', function() {
       moment.fn.jMonth.should.be.equal(moment.fn.jMonths)
     })
+// -----------------------------------------------------------------------------
   })
 
   describe('#jDate', function() {
     it('should return Jalaali date', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jDate().should.be.equal(26)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.date().should.be.equal(26)
     })
 
     it('should set Jalaali date', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jDate(30)
       m.format('jYYYY/jM/jD').should.be.equal('1360/5/30')
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.date(30)
+      m.format('jYYYY/jM/jD').should.be.equal('1360/5/30')
+
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m = moment('2013-03-01')
       m.format('jYY/jM/jD').should.be.equal('91/12/11')
       m.jDate(29)
@@ -333,6 +382,21 @@ describe('moment', function() {
       m.format('jYY/jM/jD').should.be.equal('92/1/1')
       m.jDate(90)
       m.format('jYY/jM/jD').should.be.equal('92/3/28')
+// -----------------------------------------------------------------------------
+      m = moment('2013-03-01')
+      m.format('jYY/jM/jD').should.be.equal('91/12/11')
+      m.system = moment.systems.JALAALI
+      m.date(29)
+      m.format('jYY/jM/jD').should.be.equal('91/12/29')
+      m.date(30)
+      m.format('jYY/jM/jD').should.be.equal('91/12/30')
+      m.date(30)
+      m.format('jYY/jM/jD').should.be.equal('91/12/30')
+      m.date(31)
+      m.format('jYY/jM/jD').should.be.equal('92/1/1')
+      m.date(90)
+      m.format('jYY/jM/jD').should.be.equal('92/3/28')
+
     })
 
     it('should also has jDates alias', function() {
@@ -343,16 +407,37 @@ describe('moment', function() {
   describe('#jDayOfYear', function() {
     it('should return Jalaali date of year', function() {
       var m = moment('1981-08-17')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jDayOfYear().should.be.equal(150)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.dayOfYear().should.be.equal(150)
+
       m = moment('1981-03-21')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jDayOfYear().should.be.equal(1)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.dayOfYear().should.be.equal(1)
+
       m = moment('1982-03-20')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jDayOfYear().should.be.equal(365)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.dayOfYear().should.be.equal(365)
+
       m = moment('1984-03-20')
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       m.jDayOfYear().should.be.equal(366)
+// -----------------------------------------------------------------------------
+      m.system = moment.systems.JALAALI
+      m.dayOfYear().should.be.equal(366)
+
     })
 
     it('should set Jalaali date of year', function() {
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       var m = moment('1981-08-17')
       m.jDayOfYear(30)
       m.format('jYYYY/jM/jD').should.be.equal('1360/1/30')
@@ -368,11 +453,29 @@ describe('moment', function() {
       m.format('jYY/jM/jD').should.be.equal('61/3/28')
       m.jDayOfYear(365 + 366)
       m.format('jYY/jM/jD').should.be.equal('62/12/30')
+// -----------------------------------------------------------------------------
+      var m = moment('1981-08-17')
+      m.system = moment.systems.JALAALI
+      m.dayOfYear(30)
+      m.format('jYYYY/jM/jD').should.be.equal('1360/1/30')
+      m.dayOfYear(364)
+      m.format('jYY/jM/jD').should.be.equal('60/12/28')
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('60/12/29')
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('61/1/1')
+      m.dayOfYear(1)
+      m.format('jYY/jM/jD').should.be.equal('61/1/1')
+      m.dayOfYear(90)
+      m.format('jYY/jM/jD').should.be.equal('61/3/28')
+      m.dayOfYear(365 + 366)
+      m.format('jYY/jM/jD').should.be.equal('62/12/30')
     })
   })
 
   describe('#jWeek', function() {
     it('should return Jalaali week of year', function() {
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       var m = moment('1981-08-17')
       m.jWeek().should.be.equal(22)
       m.jDayOfYear(1)
@@ -447,9 +550,86 @@ describe('moment', function() {
       m.jDayOfYear(365)
       m.format('jYY/jM/jD').should.be.equal('65/12/29')
       m.jWeek().should.be.equal(53)
+// -----------------------------------------------------------------------------
+      var m = moment('1981-08-17')
+      m.system = moment.systems.JALAALI
+      m.week().should.be.equal(22)
+      m.dayOfYear(1)
+      m.format('jYY/jM/jD').should.be.equal('60/1/1')
+      m.week().should.be.equal(1)
+      m.dayOfYear(8)
+      m.format('jYY/jM/jD').should.be.equal('60/1/8')
+      m.week().should.be.equal(2)
+      m.dayOfYear(14)
+      m.format('jYY/jM/jD').should.be.equal('60/1/14')
+      m.week().should.be.equal(2)
+      m.dayOfYear(364)
+      m.format('jYY/jM/jD').should.be.equal('60/12/28')
+      m.week().should.be.equal(52)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('60/12/29')
+      m.week().should.be.equal(1)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('61/1/1')
+      m.week().should.be.equal(1)
+      m.dayOfYear(363)
+      m.format('jYY/jM/jD').should.be.equal('61/12/27')
+      m.week().should.be.equal(52)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('61/12/29')
+      m.week().should.be.equal(1)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('62/1/1')
+      m.week().should.be.equal(1)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('62/12/29')
+      m.week().should.be.equal(1)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('62/12/30')
+      m.week().should.be.equal(1)
+      m.dayOfYear(367)
+      m.format('jYY/jM/jD').should.be.equal('63/1/1')
+      m.week().should.be.equal(1)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('63/12/29')
+      m.week().should.be.equal(1)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('64/1/1')
+      m.week().should.be.equal(1)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('64/12/29')
+      m.week().should.be.equal(1)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('65/1/1')
+      m.week().should.be.equal(1)
+      m.dayOfYear(358)
+      m.format('jYY/jM/jD').should.be.equal('65/12/22')
+      m.week().should.be.equal(52)
+      m.dayOfYear(359)
+      m.format('jYY/jM/jD').should.be.equal('65/12/23')
+      m.week().should.be.equal(53)
+      m.dayOfYear(360)
+      m.format('jYY/jM/jD').should.be.equal('65/12/24')
+      m.week().should.be.equal(53)
+      m.dayOfYear(361)
+      m.format('jYY/jM/jD').should.be.equal('65/12/25')
+      m.week().should.be.equal(53)
+      m.dayOfYear(362)
+      m.format('jYY/jM/jD').should.be.equal('65/12/26')
+      m.week().should.be.equal(53)
+      m.dayOfYear(363)
+      m.format('jYY/jM/jD').should.be.equal('65/12/27')
+      m.week().should.be.equal(53)
+      m.dayOfYear(364)
+      m.format('jYY/jM/jD').should.be.equal('65/12/28')
+      m.week().should.be.equal(53)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('65/12/29')
+      m.week().should.be.equal(53)
     })
 
     it('should set Jalaali week of year', function() {
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       var m = moment('1981-08-17')
       m.jWeek(1)
       m.format('jYY/jM/jD').should.be.equal('60/1/3')
@@ -465,11 +645,29 @@ describe('moment', function() {
       m.format('jYY/jM/jD').should.be.equal('60/12/24')
       m.jWeek(-1)
       m.format('jYY/jM/jD').should.be.equal('59/12/18')
+// -----------------------------------------------------------------------------
+      var m = moment('1981-08-17')
+      m.system = moment.systems.JALAALI
+      m.week(1)
+      m.format('jYY/jM/jD').should.be.equal('60/1/3')
+      m.week(22)
+      m.format('jYY/jM/jD').should.be.equal('60/5/26')
+      m.week(52)
+      m.format('jYY/jM/jD').should.be.equal('60/12/24')
+      m.week(53)
+      m.format('jYY/jM/jD').should.be.equal('61/1/2')
+      m.week(1)
+      m.format('jYY/jM/jD').should.be.equal('61/1/2')
+      m.week(0)
+      m.format('jYY/jM/jD').should.be.equal('60/12/24')
+      m.week(-1)
+      m.format('jYY/jM/jD').should.be.equal('59/12/18')
     })
   })
 
   describe('#jWeekYear', function() {
     it('should return Jalaali week year', function() {
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       var m = moment('1981-08-17')
       m.jWeekYear().should.be.equal(1360)
       m.jDayOfYear(1)
@@ -526,9 +724,68 @@ describe('moment', function() {
       m.jDayOfYear(366)
       m.format('jYY/jM/jD').should.be.equal('66/1/1')
       m.jWeekYear().should.be.equal(1366)
+// -----------------------------------------------------------------------------
+      var m = moment('1981-08-17')
+      m.system = moment.systems.JALAALI
+      m.weekYear().should.be.equal(1360)
+      m.dayOfYear(1)
+      m.format('jYY/jM/jD').should.be.equal('60/1/1')
+      m.weekYear().should.be.equal(1360)
+      m.dayOfYear(364)
+      m.format('jYY/jM/jD').should.be.equal('60/12/28')
+      m.weekYear().should.be.equal(1360)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('60/12/29')
+      m.weekYear().should.be.equal(1361)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('61/1/1')
+      m.weekYear().should.be.equal(1361)
+      m.dayOfYear(363)
+      m.format('jYY/jM/jD').should.be.equal('61/12/27')
+      m.weekYear().should.be.equal(1361)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('61/12/29')
+      m.weekYear().should.be.equal(1362)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('62/1/1')
+      m.weekYear().should.be.equal(1362)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('62/12/29')
+      m.weekYear().should.be.equal(1363)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('62/12/30')
+      m.weekYear().should.be.equal(1363)
+      m.dayOfYear(367)
+      m.format('jYY/jM/jD').should.be.equal('63/1/1')
+      m.weekYear().should.be.equal(1363)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('63/12/29')
+      m.weekYear().should.be.equal(1364)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('64/1/1')
+      m.weekYear().should.be.equal(1364)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('64/12/29')
+      m.weekYear().should.be.equal(1365)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('65/1/1')
+      m.weekYear().should.be.equal(1365)
+      m.dayOfYear(358)
+      m.format('jYY/jM/jD').should.be.equal('65/12/22')
+      m.weekYear().should.be.equal(1365)
+      m.dayOfYear(359)
+      m.format('jYY/jM/jD').should.be.equal('65/12/23')
+      m.weekYear().should.be.equal(1365)
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('65/12/29')
+      m.weekYear().should.be.equal(1365)
+      m.dayOfYear(366)
+      m.format('jYY/jM/jD').should.be.equal('66/1/1')
+      m.weekYear().should.be.equal(1366)
     })
 
     it('should set Jalaali week year', function() {
+// -----------------------------DEPRECATED REMOVE WITH 1.0.0 -------------------
       var m = moment('1981-08-17')
       m.jWeekYear(1361)
       m.format('jYY/jM/jD').should.be.equal('61/5/26')
@@ -539,6 +796,19 @@ describe('moment', function() {
       m.jWeekYear(1364)
       m.format('jYY/jM/jD').should.be.equal('63/12/29')
       m.jWeekYear(1365)
+      m.format('jYY/jM/jD').should.be.equal('64/12/29')
+// -----------------------------------------------------------------------------
+      var m = moment('1981-08-17')
+      m.system = moment.systems.JALAALI
+      m.weekYear(1361)
+      m.format('jYY/jM/jD').should.be.equal('61/5/26')
+      m.weekYear(1364)
+      m.format('jYY/jM/jD').should.be.equal('64/5/26')
+      m.dayOfYear(365)
+      m.format('jYY/jM/jD').should.be.equal('64/12/29')
+      m.weekYear(1364)
+      m.format('jYY/jM/jD').should.be.equal('63/12/29')
+      m.weekYear(1365)
       m.format('jYY/jM/jD').should.be.equal('64/12/29')
     })
   })
